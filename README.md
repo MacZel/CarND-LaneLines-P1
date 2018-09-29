@@ -1,56 +1,173 @@
 # **Finding Lane Lines on the Road** 
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-<img src="examples/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
+## Udacity Self-Driving Car Nanodegree
 
-Overview
 ---
 
-When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
+**Finding Lane Lines on the Road**
 
-In this project you will detect lane lines in images using Python and OpenCV.  OpenCV means "Open-Source Computer Vision", which is a package that has many useful tools for analyzing images.  
+The goals of this project was to make a pipeline that finds lane lines on the road and to reflect on my work in a written report.
 
-To complete the project, two files will be submitted: a file containing project code and a file containing a brief write up explaining your solution. We have included template files to be used both for the [code](https://github.com/udacity/CarND-LaneLines-P1/blob/master/P1.ipynb) and the [writeup](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md).The code file is called P1.ipynb and the writeup template is writeup_template.md 
+[//]: # (Image References)
 
-To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
+[image0_origin]: ./test_images/solidWhiteCurve.jpg "solidWhiteCurve, original"
+[image1_origin]: ./test_images/solidWhiteRight.jpg "solidWhiteRight, original"
+[image2_origin]: ./test_images/solidYellowCurve.jpg "solidYellowCurve, original"
+[image3_origin]: ./test_images/solidYellowCurve2.jpg "solidYellowCurve2, original"
+[image4_origin]: ./test_images/solidYellowLeft.jpg "solidYellowLeft, original"
+[image5_origin]: ./test_images/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, original"
 
+[image0_mask_wy]: ./test_images_output/00_mask_white_yellow/solidWhiteCurve.jpg "solidWhiteCurve, white & yellow masking"
+[image1_mask_wy]: ./test_images_output/00_mask_white_yellow/solidWhiteRight.jpg "solidWhiteRight, white & yellow masking"
+[image2_mask_wy]: ./test_images_output/00_mask_white_yellow/solidYellowCurve.jpg "solidYellowCurve, white & yellow masking"
+[image3_mask_wy]: ./test_images_output/00_mask_white_yellow/solidYellowCurve2.jpg "solidYellowCurve2, white & yellow masking"
+[image4_mask_wy]: ./test_images_output/00_mask_white_yellow/solidYellowLeft.jpg "solidYellowLeft, white & yellow masking"
+[image5_mask_wy]: ./test_images_output/00_mask_white_yellow/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, white & yellow masking"
 
-Creating a Great Writeup
+[image0_gray]: ./test_images_output/01_grayscale/solidWhiteCurve.jpg "solidWhiteCurve, grayscale"
+[image1_gray]: ./test_images_output/01_grayscale/solidWhiteRight.jpg "solidWhiteRight, grayscale"
+[image2_gray]: ./test_images_output/01_grayscale/solidYellowCurve.jpg "solidYellowCurve, grayscale"
+[image3_gray]: ./test_images_output/01_grayscale/solidYellowCurve2.jpg "solidYellowCurve2, grayscale"
+[image4_gray]: ./test_images_output/01_grayscale/solidYellowLeft.jpg "solidYellowLeft, grayscale"
+[image5_gray]: ./test_images_output/01_grayscale/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, grayscale"
+
+[image0_gauss]: ./test_images_output/02_gaussian_smoothing/solidWhiteCurve.jpg "solidWhiteCurve, gaussian smoothing"
+[image1_gauss]: ./test_images_output/02_gaussian_smoothing/solidWhiteRight.jpg "solidWhiteRight, gaussian smoothing"
+[image2_gauss]: ./test_images_output/02_gaussian_smoothing/solidYellowCurve.jpg "solidYellowCurve, gaussian smoothing"
+[image3_gauss]: ./test_images_output/02_gaussian_smoothing/solidYellowCurve2.jpg "solidYellowCurve2, gaussian smoothing"
+[image4_gauss]: ./test_images_output/02_gaussian_smoothing/solidYellowLeft.jpg "solidYellowLeft, gaussian smoothing"
+[image5_gauss]: ./test_images_output/02_gaussian_smoothing/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, gaussian smoothing"
+
+[image0_canny]: ./test_images_output/03_canny_edge_detection/solidWhiteCurve.jpg "solidWhiteCurve, canny edge detection"
+[image1_canny]: ./test_images_output/03_canny_edge_detection/solidWhiteRight.jpg "solidWhiteRight, canny edge detection"
+[image2_canny]: ./test_images_output/03_canny_edge_detection/solidYellowCurve.jpg "solidYellowCurve, canny edge detection"
+[image3_canny]: ./test_images_output/03_canny_edge_detection/solidYellowCurve2.jpg "solidYellowCurve2, canny edge detection"
+[image4_canny]: ./test_images_output/03_canny_edge_detection/solidYellowLeft.jpg "solidYellowLeft, canny edge detection"
+[image5_canny]: ./test_images_output/03_canny_edge_detection/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, canny edge detection"
+
+[image0_mask_fl]: ./test_images_output/04_mask_front_lane/solidWhiteCurve.jpg "solidWhiteCurve, front lane masking"
+[image1_mask_fl]: ./test_images_output/04_mask_front_lane/solidWhiteRight.jpg "solidWhiteRight, front lane masking"
+[image2_mask_fl]: ./test_images_output/04_mask_front_lane/solidYellowCurve.jpg "solidYellowCurve, front lane masking"
+[image3_mask_fl]: ./test_images_output/04_mask_front_lane/solidYellowCurve2.jpg "solidYellowCurve2, front lane masking"
+[image4_mask_fl]: ./test_images_output/04_mask_front_lane/solidYellowLeft.jpg "solidYellowLeft, front lane masking"
+[image5_mask_fl]: ./test_images_output/04_mask_front_lane/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, front lane masking"
+
+[image0_hough]: ./test_images_output/05_hough_transform/solidWhiteCurve.jpg "solidWhiteCurve, hough transform"
+[image1_hough]: ./test_images_output/05_hough_transform/solidWhiteRight.jpg "solidWhiteRight, hough transform"
+[image2_hough]: ./test_images_output/05_hough_transform/solidYellowCurve.jpg "solidYellowCurve, hough transform"
+[image3_hough]: ./test_images_output/05_hough_transform/solidYellowCurve2.jpg "solidYellowCurve2, hough transform"
+[image4_hough]: ./test_images_output/05_hough_transform/solidYellowLeft.jpg "solidYellowLeft, hough transform"
+[image5_hough]: ./test_images_output/05_hough_transform/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, hough transform"
+
+[image0_weight]: ./test_images_output/06_weighted/solidWhiteCurve.jpg "solidWhiteCurve, lines overlayed"
+[image1_weight]: ./test_images_output/06_weighted/solidWhiteRight.jpg "solidWhiteRight, lines overlayed"
+[image2_weight]: ./test_images_output/06_weighted/solidYellowCurve.jpg "solidYellowCurve, lines overlayed"
+[image3_weight]: ./test_images_output/06_weighted/solidYellowCurve2.jpg "solidYellowCurve2, lines overlayed"
+[image4_weight]: ./test_images_output/06_weighted/solidYellowLeft.jpg "solidYellowLeft, lines overlayed"
+[image5_weight]: ./test_images_output/06_weighted/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, lines overlayed"
+
 ---
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
 
-1. Describe the pipeline
+### Reflection
 
-2. Identify any shortcomings
+### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
 
-3. Suggest possible improvements
+My pipeline consisted of 7 steps:
+1. Masking of yellow and white colors. I did experiment with HSV, HSL and RGB colorspaces, however RGB masking seemed sufficient enough for further processing.
+    Below is the function used to apply color masks, complete with thresholds defining the color ranges.
+    
+```python
+def apply_color_masks(image):
+    """Applies white and yellow colors masks"""
 
-We encourage using images in your writeup to demonstrate how your pipeline works.  
+    mask_white = cv2.inRange(image, np.array([90, 90, 200]), np.array([255, 255, 255]))
+    mask_yellow = cv2.inRange(image, np.array([215, 170, 0]), np.array([255, 255, 180]))
+    mask_combined = cv2.bitwise_or(mask_white, mask_yellow)
+    return cv2.bitwise_and(image, image, mask = mask_combined)
+```
+Original | White&yellow masking
+:---:|:---:
+![][image0_origin] | ![][image0_mask_wy]
 
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
+2. Convertion of a masked image to grayscale colorspace as it is required in Canny Edge Detection step.
 
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
+White&yellow masking | Grayscaled
+:---:|:---:
+![][image0_mask_wy] | ![][image0_gray]
+
+3. Gaussian smoothing to prevent false detection caused by noise. This filter is built into Canny Edge Detection algorithm, however separating it as another step makes the filter more flexible.
+
+Grayscaled | Gaussian smoothing
+:---:|:---:
+![][image0_gray] | ![][image0_gauss]
+
+4. Applying Canny Edge Detection.
+
+Gaussian smoothing | Canny edge detection
+:---:|:---:
+![][image0_gauss] | ![][image0_canny]
+
+5. Masking of a front lane ahead of the car, so only this area would be processed in further steps.
+
+Canny edge detection | Front lane masking
+:---:|:---:
+![][image0_canny] | ![][image0_mask_fl]
+
+6. Applying Hough transform to easily aggregate and draw lane lines.
+
+Front lane masking | Hough transform
+:---:|:---:
+![][image0_mask_fl] | ![][image0_hough]
+
+7. Final step of overlaying the lines onto original image.
+
+Hough transform | Overlaying
+:---:|:---:
+![][image0_hough] | ![][image0_weight]
 
 
-The Project
----
+In order to draw a single line on the left and right lanes, I modified the draw_lines() function by incorporating basic line equations. For every line the slope, y-interception and length are being calculated. Slope of the line is used to make a distinction between left or right lane line. Y-axis goes from top-to-bottom of the image so negative slope results in left lane line.
+```python
+if line_slope < 0:
+    if not l_lines.size:
+        l_lines = np.array([[line_slope, line_y_intercept, line_length]])
+    l_lines = np.concatenate((l_lines, [[line_slope, line_y_intercept, line_length]]), axis = 0)
+else:
+    if not r_lines.size:
+        r_lines = np.array([[line_slope, line_y_intercept, line_length]])
+    r_lines = np.concatenate((r_lines, [[line_slope, line_y_intercept, line_length]]), axis = 0)
+```
+Next step is to calculated the weighted average of all slopes and all y_intercepts, with weights being line lengths.
+```python
+wavg_l_slope = np.average(l_lines[:,0], weights=l_lines[:,2])
+wavg_l_y_intercept = np.average(l_lines[:,1], weights=l_lines[:,2])
+```
+Once we have those parameters averaged we can calculate x cooridinates of the points creating the line. We assume y_0 is the bottom of the image (full height) and y_1 is around y_1 = 0.65 * y_0 (at y_1 < 0.6 * y_0 lane lines cross each other).
+```python
+l_x1 = np.int_((y1 - wavg_l_y_intercept) / wavg_l_slope)
+l_x2 = np.int_((y2 - wavg_l_y_intercept) / wavg_l_slope)
+cv2.line(img, (l_x1, np.int_(y1)), (l_x2, np.int_(y2)), color, thickness)
+```
+Once we have line coordinates all we have to do is to draw the lines onte the original image.
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
+Below is the process of Lane Lines Detection for all images from test_images directory.
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/83ec35ee-1e02-48a5-bdb7-d244bd47c2dc/lessons/8c82408b-a217-4d09-b81d-1bda4c6380ef/concepts/4f1870e0-3849-43e4-b670-12e6f2d4b7a7) if you haven't already.
+Original | White&yellow masking | Grayscaled | Gaussian smoothing | Canny edge detection | Front lane masking | Hough transform | Overlaying
+:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:
+![][image0_origin] | ![][image0_mask_wy] | ![][image0_gray] | ![][image0_gauss] | ![][image0_canny] | ![][image0_mask_fl] | ![][image0_hough] | ![][image0_weight]
+![][image1_origin] | ![][image1_mask_wy] | ![][image1_gray] | ![][image1_gauss] | ![][image1_canny] | ![][image1_mask_fl] | ![][image1_hough] | ![][image1_weight]
+![][image2_origin] | ![][image2_mask_wy] | ![][image2_gray] | ![][image2_gauss] | ![][image2_canny] | ![][image2_mask_fl] | ![][image2_hough] | ![][image2_weight]
+![][image3_origin] | ![][image3_mask_wy] | ![][image3_gray] | ![][image3_gauss] | ![][image3_canny] | ![][image3_mask_fl] | ![][image3_hough] | ![][image3_weight]
+![][image4_origin] | ![][image4_mask_wy] | ![][image4_gray] | ![][image4_gauss] | ![][image4_canny] | ![][image4_mask_fl] | ![][image4_hough] | ![][image4_weight]
+![][image5_origin] | ![][image5_mask_wy] | ![][image5_gray] | ![][image5_gauss] | ![][image5_canny] | ![][image5_mask_fl] | ![][image5_hough] | ![][image5_weight]
 
-**Step 2:** Open the code in a Jupyter Notebook
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out [Udacity's free course on Anaconda and Jupyter Notebooks](https://classroom.udacity.com/courses/ud1111) to get started.
+### 2. Identify potential shortcomings with your current pipeline
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
 
-`> jupyter notebook`
+One potential shortcoming would be what would happen when the lines are occasionally not detected at all or are heavily shadowed. Another shortcoming could be detecting the lines from the wrong road surface markings. Another shortcoming could be detecting left line but not detecting the other line.
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
+### 3. Suggest possible improvements to your pipeline
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+A possible improvement would be to narrow down a range of possible line slopes. Another potential improvement could be to keep memory of e.g. last 5 time frames. Then if the line is not detected it could be derived from previous time frame. In case we can detect only one of the line, we can assume the slope of other lane line since lane lines always follow the same direction.
