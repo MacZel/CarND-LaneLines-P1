@@ -1,14 +1,7 @@
-# **Finding Lane Lines on the Road** 
-
-## Udacity Self-Driving Car Nanodegree
-
----
-
-**Finding Lane Lines on the Road**
+# **Finding Lane Lines on the Road**
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
 The goals of this project was to make a pipeline that finds lane lines on the road and to reflect on my work in a written report.
-
-[//]: # (Image References)
 
 [image0_origin]: ./test_images/solidWhiteCurve.jpg "solidWhiteCurve, original"
 [image1_origin]: ./test_images/solidWhiteRight.jpg "solidWhiteRight, original"
@@ -65,8 +58,6 @@ The goals of this project was to make a pipeline that finds lane lines on the ro
 [image3_weight]: ./test_images_output/06_weighted/solidYellowCurve2.jpg "solidYellowCurve2, lines overlayed"
 [image4_weight]: ./test_images_output/06_weighted/solidYellowLeft.jpg "solidYellowLeft, lines overlayed"
 [image5_weight]: ./test_images_output/06_weighted/whiteCarLaneSwitch.jpg "whiteCarLaneSwitch, lines overlayed"
-
----
 
 ### Reflection
 
